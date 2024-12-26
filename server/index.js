@@ -5,11 +5,10 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
+dotenv.config({ path: '../.env' });
 
 const app = express();
 const PORT = 8080;
-
-dotenv.config();
 
 // Connect to MongoDB
 connectDB();
