@@ -1,6 +1,5 @@
-// FQXitigtEWbYVHlw
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -12,6 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  useRegisterUserMutation,
+  useLoginUserMutation,
+} from "@/features/api/authApi";
+import { toast } from "sonner";
 
 export default function Login() {
   const [signupInput, setSignupInput] = useState({
@@ -20,6 +24,24 @@ export default function Login() {
     password: "",
   });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
+  const [
+    registerUser,
+    {
+      data: registerData,
+      error: registerError,
+      isLoading: registerIsLoading,
+      isSuccess: registerIsSuccess,
+    },
+  ] = useRegisterUserMutation();
+  const [
+    loginUser,
+    {
+      data: loginData,
+      error: loginError,
+      isLoading: loginIsLoading,
+      isSuccess: loginIsSuccess,
+    },
+  ] = useLoginUserMutation();
   const changeInputHandler = (e, type) => {
     if (type === "signup")
       setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
@@ -27,11 +49,38 @@ export default function Login() {
       setLoginInput({ ...loginInput, [e.target.name]: e.target.value });
     }
   };
-  const handleRegisteration = (type) => {
+  const handleRegisteration = async (type) => {
     const inputData = type === "signup" ? signupInput : loginInput;
-    console.log(inputData);
+    const action = type === "signup" ? registerUser : loginUser;
+
+    await action(inputData);
   };
 
+  useEffect(() => {
+    if (registerIsSuccess && registerData) {
+      toast.success(registerData.message || "User created successfully");
+    }
+    if (loginIsSuccess && loginData) {
+      toast.success(loginData.message || "User logged in successfully");
+    }
+    if (registerError) {
+      toast.error(
+        registerError.message || "Error occured while registering user"
+      );
+    }
+    if (loginError) {
+      toast.error(loginError.message || "Error occured while logging in user");
+    }
+  }, [
+    loginIsLoading,
+    registerIsLoading,
+    loginData,
+    registerData,
+    loginError,
+    registerError,
+    registerIsSuccess,
+    loginIsSuccess,
+  ]);
   return (
     <div className="flex items-center justify-center min-h-screen">
       <Tabs defaultValue="signup" className="w-[400px]">
@@ -83,8 +132,11 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleRegisteration("signup")}>
-                Signup
+              <Button
+                disabled={registerIsLoading}
+                onClick={() => handleRegisteration("signup")}
+              >
+                {registerIsLoading ? "Loading..." : "Signup"}
               </Button>
             </CardFooter>
           </Card>
@@ -122,8 +174,11 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleRegisteration("login")}>
-                Login
+              <Button
+                disabled={loginIsLoading}
+                onClick={() => handleRegisteration("login")}
+              >
+                {loginIsLoading ? "Loading..." : "Login"}
               </Button>
             </CardFooter>
           </Card>
