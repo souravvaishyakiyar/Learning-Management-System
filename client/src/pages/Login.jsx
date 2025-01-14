@@ -16,8 +16,10 @@ import {
   useLoginUserMutation,
 } from "@/features/api/authApi";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate=useNavigate();
   const [signupInput, setSignupInput] = useState({
     name: "",
     email: "",
@@ -62,6 +64,7 @@ export default function Login() {
     }
     if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "User logged in successfully");
+      navigate("/")
     }
     if (registerError) {
       toast.error(
