@@ -7,35 +7,41 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: USER_API,
     credentials: "include",
-
   }),
-
-  endpoints:(builder)=>({
-    registerUser:builder.mutation({
-      query:(inputData)=>({
-        url:"register",
-        method:"POST",
-        body:inputData
-      })
+  endpoints: (builder) => ({
+    registerUser: builder.mutation({
+      query: (inputData) => ({
+        url: "register",
+        method: "POST",
+        body: inputData,
+      }),
     }),
-    loginUser:builder.mutation({
-      query:(inputData)=>({
-        url:"login",
-        method:"POST",
-        body:inputData
-      })
-    }),
-    async onQueryStarted(_, { dispatch, queryFulfilled }) {
-      try {
-        const result = await queryFulfilled;
-        dispatch(userLoggedIn({ user: result.data.user }))
-        
-        console.log(result);
-      } catch (error) {
-        console.error(error);
+    loginUser: builder.mutation({
+      query: (inputData) => ({
+        url: "login",
+        method: "POST",
+        body: inputData,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(userLoggedIn({ user: result.data.user }));
+          console.log(result);
+        } catch (error) {
+          console.error(error);
+        }
       }
-    }
-  })
+
+    }),
+    loadUser:builder.query({
+      query:()=>({
+        url:"profile",
+        method:"GET"
+      })
+    }),
+    
+   
+  }),
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation } = authApi;       
+export const { useRegisterUserMutation, useLoginUserMutation, useLoadUserQuery } = authApi;
