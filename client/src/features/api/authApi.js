@@ -7,6 +7,13 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: USER_API,
     credentials: "include",
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth.token;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
@@ -30,18 +37,28 @@ export const authApi = createApi({
         } catch (error) {
           console.error(error);
         }
-      }
-
+      },
     }),
-    loadUser:builder.query({
-      query:()=>({
-        url:"profile",
-        method:"GET"
-      })
+    loadUser: builder.query({
+      query: () => ({
+        url: "profile",
+        method: "GET",
+      }),
     }),
-    
-   
+    updateUser: builder.mutation({
+      query: (formData) => ({
+        url: "profile/update",
+        method: "PUT",
+        body: formData,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation, useLoadUserQuery } = authApi;
+export const { 
+  useRegisterUserMutation, 
+  useLoginUserMutation, 
+  useUpdateUserMutation,
+  useLoadUserQuery
+} = authApi;

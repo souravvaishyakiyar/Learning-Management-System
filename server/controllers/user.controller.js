@@ -1,6 +1,7 @@
 import {User} from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
+import { uploadMedia } from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -108,6 +109,53 @@ export const getUserProfile = async (req,res) => {
           success:false,
           message:"Failed to load user"
       })
+  }
+}
+export const updateUserProfile = async (req,res) => {
+  try {
+    const userId = req.id;
+  const {name}=req.body;
+    const profilePhoto = req.file;
+     console.log(profilePhoto);
+    
+    
+
+    const user = await User.findById(userId);
+    if(!user){
+        return res.status(404).json({
+            message:"User not found",
+            success:false
+        })
+    }
+
+    let photoUrl = user.photoUrl;
+    
+    
+    if (profilePhoto) {
+      if (user.photoUrl) {
+        const publicId = user.photoUrl.split("/").pop().split(".")[0];//Extract the public id from the photoUrl
+        deleteMediaFromCloudinary(publicId);
+      }
+      const cloudResponse = await uploadMedia(profilePhoto.path);
+      
+      photoUrl = cloudResponse.secure_url;
+      
+    }
+    
+    const updatedData={name,photoUrl };
+    console.log(updatedData);
+    const updatedUser=await User.findByIdAndUpdate(userId,updatedData,{new:true}).select("-password");
+    return res.status(200).json({
+        success:true,
+        user:updatedUser,
+        message:"User profile updated successfully"
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+        success:false,
+        message:"Failed to update user"
+    })
   }
 }
 
