@@ -11,7 +11,7 @@ export const register = async (req, res) => {
       msg: "Please fill in all fields.",
     });
   // Check if the user already exists
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("-password");
   if (user) {
     return res.status(400).json({
       success: false,
@@ -48,7 +48,7 @@ export const login = async (req, res) => {
         msg: "Please fill in all fields.",
       });
     // Check if the user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("-password");;
     if (!user) {
       return res.status(400).json({
         success: false,
