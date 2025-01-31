@@ -10,3 +10,9 @@ export const appStore = configureStore({
 
 });
 
+const initializApp=async()=>{
+    await appStore.dispatch(authApi.endpoints.loadUser.initiate({},{forceRefetch:true}));
+}
+
+initializApp();
+

@@ -72,7 +72,7 @@ export default function Login() {
       );
     }
     if (loginError) {
-      toast.error(loginError.message || "Error occured while logging in user");
+      toast.error(loginError.data.message || "Error occured while logging in user");
     }
   }, [
     loginIsLoading,

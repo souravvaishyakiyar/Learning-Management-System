@@ -1,7 +1,7 @@
 import {User} from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
-import { uploadMedia } from "../utils/cloudinary.js";
+import { uploadMedia, deleteMediaFromCloudinary } from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -116,7 +116,7 @@ export const updateUserProfile = async (req,res) => {
     const userId = req.id;
   const {name}=req.body;
     const profilePhoto = req.file;
-     console.log(profilePhoto);
+     
     
     
 
@@ -143,7 +143,7 @@ export const updateUserProfile = async (req,res) => {
     }
     
     const updatedData={name,photoUrl };
-    console.log(updatedData);
+    // console.log(updatedData);
     const updatedUser=await User.findByIdAndUpdate(userId,updatedData,{new:true}).select("-password");
     return res.status(200).json({
         success:true,
