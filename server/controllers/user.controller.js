@@ -48,7 +48,7 @@ export const login = async (req, res) => {
         msg: "Please fill in all fields.",
       });
     // Check if the user exists
-    const user = await User.findOne({ email }).select("-password");;
+    const user = await User.findOne({ email })
     if (!user) {
       return res.status(400).json({
         success: false,

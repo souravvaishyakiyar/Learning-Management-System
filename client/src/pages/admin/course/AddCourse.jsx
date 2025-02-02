@@ -10,22 +10,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateCourseMutation } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 // import { Label } from '@radix-ui/react-dropdown-menu'
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const AddCourse = () => {
   const [courseTitle, setCourseTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [createCourse,{data,error,isSuccess,isLoading}]=useCreateCourseMutation();
   const navigate=useNavigate();
-  const isLoading=false;
+ 
 
 
   const createCourseHandler = async () => {
-   
-  }
+   await createCourse({courseTitle,category});
+  };
+
+  useEffect(()=>{
+    if(isSuccess)
+    {
+      toast.success(data?.message ||'Course created successfully');
+    }
+  },[isSuccess,error])
 
   const getSelectedCategory=(value)=>{
     setCategory(value);

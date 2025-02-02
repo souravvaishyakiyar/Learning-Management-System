@@ -3,10 +3,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
 // import { authApi } from "./authApi"; // Adjust the import path as necessary
 import { authApi } from "@/features/api/authApi";
+import { courseApi } from "@/features/api/courseApi";
 export const appStore = configureStore({
     reducer:rootReducer,
-    middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(authApi.middleware),   
-        serializableCheck:false
+    middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(authApi.middleware, courseApi.middleware),   
+      
+    serializableCheck:false
 
 });
 
