@@ -77,7 +77,7 @@ const CourseTable = () => {
     Create new Course
    </Button>
    <Table>
-   <TableCaption>A list of your recent invoices.</TableCaption>
+   <TableCaption>A list of your recent courses.</TableCaption>
    <TableHeader>
      <TableRow>
        <TableHead className="w-[100px]">Price</TableHead>
@@ -93,19 +93,14 @@ const CourseTable = () => {
          <TableCell><Badge>{course.isPublished?"Published":"Draft"}</Badge></TableCell>
          <TableCell>{course.courseTitle}</TableCell>
          <TableCell className="text-right">
-          <Button size="sm" variant="ghost">
+          <Button size="sm" variant="ghost" onClick={()=>navigate(`${course._id}`)}>
             <Edit/>
           </Button>
          </TableCell>
        </TableRow>
      ))}
    </TableBody>
-   <TableFooter>
-     <TableRow>
-       <TableCell colSpan={3}>Total</TableCell>
-       <TableCell className="text-right">$2,500.00</TableCell>
-     </TableRow>
-   </TableFooter>
+  
  </Table>
  </>
   )
