@@ -30,7 +30,7 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const {user} = useSelector((store)=>store.auth);
-  console.log(user);
+  
   const navigate=useNavigate();
   const [logoutUser, {data,isSuccess}]=useLogoutUserMutation();
   const logoutHandler = async () => {
