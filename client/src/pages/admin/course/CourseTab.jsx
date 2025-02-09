@@ -18,13 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi";
+import {
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+} from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import { use } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -36,32 +38,33 @@ const CourseTab = () => {
     coursePrice: "",
     courseThumbnail: "",
   });
-  
-  const params= useParams();
-  const courseId= params.courseId;
-  const {data:courseByIdData,isLoading:courseByIdLoading}=useGetCourseByIdQuery(courseId);
-  // const course= courseByIdData?.course;
-  useEffect(()=>{
-    if(courseByIdData?.course){
-      const course= courseByIdData?.course;
-      setInput({
-        courseTitle:course.courseTitle,
-        subTitle:course.subTitle,
-        description:course.description,
-        category:course.category,
-        courseLevel:course.courseLevel,
-        coursePrice:course.coursePrice,
-        courseThumbnail:""
-      })
-    }
 
-  },[courseByIdData])
+  const params = useParams();
+  const courseId = params.courseId;
+  const { data: courseByIdData, isLoading: courseByIdLoading } =
+    useGetCourseByIdQuery(courseId);
+  // const course= courseByIdData?.course;
+  useEffect(() => {
+    if (courseByIdData?.course) {
+      const course = courseByIdData?.course;
+      setInput({
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
+        courseThumbnail: "",
+      });
+    }
+  }, [courseByIdData]);
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-  const [editCourse, {data, isLoading, isSuccess, error}]=useEditCourseMutation(courseId,{refetchOnMount:true});
+  const [editCourse, { data, isLoading, isSuccess, error }] =
+    useEditCourseMutation(courseId, { refetchOnMount: true });
   //  const params= useParams();
   const changeEventHandler = (e) => {
-    const {name, value}= e.target;  
+    const { name, value } = e.target;
     setInput({ ...input, [name]: value });
   };
 
@@ -70,7 +73,7 @@ const CourseTab = () => {
   };
 
   const selectCourseLevel = (value) => {
-    setInput({ ...input, category: value });
+    setInput({ ...input, courseLevel: value });
   };
 
   const selectThumbnail = (e) => {
@@ -83,7 +86,7 @@ const CourseTab = () => {
     }
   };
 
-  const updateCourseHandler=async ()=>{
+  const updateCourseHandler = async () => {
     const formData = new FormData();
     formData.append("courseTitle", input.courseTitle);
     formData.append("subTitle", input.subTitle);
@@ -93,19 +96,19 @@ const CourseTab = () => {
     formData.append("coursePrice", input.coursePrice);
     formData.append("courseThumbnail", input.courseThumbnail);
 
-    await editCourse({formData,courseId});
-  }
+    await editCourse({ formData, courseId });
+  };
 
-  useEffect(()=>{
-    if(isSuccess){
-      toast.success(data.message||"Course updated successfully");
-       navigate("/admin/course");
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "Course updated successfully");
+      navigate("/admin/course");
     }
-    if(error){
-      toast.error(error.data.message||"Something went wrong");
+    if (error) {
+      toast.error(error.data.message || "Something went wrong");
     }
-  },[isSuccess,error]);
-  if(courseByIdLoading) return <Loader2 className="h-4 w-4 animate-spin" />;
+  }, [isSuccess, error]);
+  if (courseByIdLoading) return <Loader2 className="h-4 w-4 animate-spin" />;
   const isPublished = true;
 
   return (
@@ -153,10 +156,7 @@ const CourseTab = () => {
           <div className="flex items-center gap-5">
             <div>
               <Label>Category</Label>
-              <Select
-                 defaultValue={input.category}
-                onValueChange={selectCategory}
-              >
+              <Select value={input.category} onValueChange={selectCategory}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -186,7 +186,7 @@ const CourseTab = () => {
             <div>
               <Label>Course Level</Label>
               <Select
-                defaultValue={input.courseLevel}
+                value={input.courseLevel}
                 onValueChange={selectCourseLevel}
               >
                 <SelectTrigger className="w-[180px]">
@@ -205,12 +205,12 @@ const CourseTab = () => {
             <div>
               <Label>Price in (INR)</Label>
               <Input
-                 type="number"
-                 name="coursePrice"
-                 value={input.coursePrice}
-                 onChange={changeEventHandler}
-                 placeholder="199"
-                 className="w-fit"
+                type="number"
+                name="coursePrice"
+                value={input.coursePrice}
+                onChange={changeEventHandler}
+                placeholder="199"
+                className="w-fit"
               />
             </div>
           </div>

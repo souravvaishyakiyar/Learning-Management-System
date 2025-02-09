@@ -1,4 +1,5 @@
 import {Course} from "../models/course.model.js";
+import { Lecture } from "../models/lecture.model.js";
 import {deleteMediaFromCloudinary, uploadMedia} from "../utils/cloudinary.js";
 
 export const createCourse = async (req, res) => {
@@ -48,8 +49,8 @@ export const getCreatorCourses = async (req, res) => {
 export const editCourse = async (req,res) => {
     try {
         const courseId = req.params.courseId;
-        console.log(courseId);
-        const {courseTitle, subTitle, description, category, courseLevel, coursePrice} = req.body;
+        
+        const {courseTitle, subTitle,  description,category, courseLevel, coursePrice} = req.body;
         const thumbnail = req.file;
 
         let course = await Course.findById(courseId);
@@ -70,8 +71,8 @@ export const editCourse = async (req,res) => {
         }
 
  
-        const updateData = {courseTitle, subTitle, description, category, courseLevel, coursePrice, courseThumbnail:courseThumbnail?.secure_url};
-        console.log(updateData);
+        const updateData = {courseTitle, subTitle,  description,category, courseLevel, coursePrice, courseThumbnail:courseThumbnail?.secure_url};
+  
 
         course = await Course.findByIdAndUpdate(courseId, updateData, {new:true});
 
@@ -105,5 +106,39 @@ export const getCourseById= async (req,res)=>{
         return res.status(500).json({
             message:"Failed to get course"
         })
+    }
+}
+
+export const createLecture= async(req,res)=>{
+    try {
+        const {lectureTitle}=req.body;
+        const {courseId}=req.params;
+
+        if(!lectureTitle||!courseId)
+        {
+            return res.status(400).json({
+                message:"Lecture title is required"
+            })
+        };
+
+        const lecture= await Lecture.create({
+            lectureTitle
+        })
+        const course= await Course.findById(courseId)
+        if(course){
+            course.lectures.push(lecture._id)
+            await course.save()
+        }
+        return res.status(201).json({
+            lecture,
+            message:"Lecture created sucessfully"
+        })
+        
+    } catch (error) {
+        console.log(error)
+       return res.status(500).json({
+        message:"Failed to create Lectue"
+       })
+        
     }
 }
