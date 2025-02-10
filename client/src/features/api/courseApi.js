@@ -1,11 +1,10 @@
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const COURSE_API = "http://localhost:8080/api/v1/course/";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
-  tagTypes:['Refetch_Creator_Course'],
+  tagTypes: ["Refetch_Creator_Course"],
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
@@ -18,7 +17,7 @@ export const courseApi = createApi({
         method: "POST",
         body: { courseTitle, category },
       }),
-      invalidatesTags:["Refetch_Creator_Course"]
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
 
     getCreatorCourse: builder.query({
@@ -26,16 +25,15 @@ export const courseApi = createApi({
         url: "/",
         method: "GET",
       }),
-      providesTags:["Refetch_Creator_Course"]
+      providesTags: ["Refetch_Creator_Course"],
     }),
     editCourse: builder.mutation({
-      query: ({formData,courseId}) => ({
+      query: ({ formData, courseId }) => ({
         url: `/${courseId}`,
         method: "PUT",
         body: formData,
       }),
-      invalidatesTags:["Refetch_Creator_Course"]
-     
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
     getCourseById: builder.query({
       query: (courseId) => ({
@@ -51,13 +49,35 @@ export const courseApi = createApi({
       }),
     }),
 
+    getCourseLecture: builder.query({
+      query: (courseId) => ({
+        url: `/${courseId}/lecture`,
+        method: "GET",
+      }),
+      providesTags: ["Refetch_Lecture"],
+    }),
+    editLecture: builder.mutation({
+      query: ({
+        lectureTitle,
+        videoInfo,
+        isPreviewFree,
+        courseId,
+        lectureId,
+      }) => ({
+        url: `/${courseId}/lecture/${lectureId}`,
+        method: "POST",
+        body: {lectureTitle, videoInfo,isPreviewFree},
+      }),
+    }),
   }),
 });
 
-export const { 
-  useCreateCourseMutation, 
-  useGetCreatorCourseQuery, 
+export const {
+  useCreateCourseMutation,
+  useGetCreatorCourseQuery,
   useEditCourseMutation,
   useGetCourseByIdQuery,
-  useCreateLectureMutation
+  useCreateLectureMutation,
+  useGetCourseLectureQuery,
+  useEditLectureMutation
 } = courseApi;

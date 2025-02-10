@@ -5,7 +5,10 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import courseRoute from "./routes/course.route.js";
+import mediaRoute from "./routes/media.route.js"
+
 dotenv.config({ path: "../.env" });
+
 
 const app = express();
 const PORT = 8080;
@@ -23,6 +26,7 @@ app.use(
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
+app.use("/api/v1/media", mediaRoute)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

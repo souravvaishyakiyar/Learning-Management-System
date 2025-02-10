@@ -33,7 +33,7 @@ export const authApi = createApi({
         try {
           const result = await queryFulfilled;
           dispatch(userLoggedIn({ user: result.data.user }));
-          console.log(result);
+          // console.log(result);
         } catch (error) {
           console.error(error);
         }
@@ -64,7 +64,7 @@ export const authApi = createApi({
         try {
           const result = await queryFulfilled;
           dispatch(userLoggedIn({ user: result.data.user }));
-          console.log(result);
+          // console.log(result);
         } catch (error) {
           console.error(error);
         }

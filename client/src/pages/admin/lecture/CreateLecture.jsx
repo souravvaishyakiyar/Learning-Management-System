@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {  useCreateLectureMutation } from "@/features/api/courseApi";
+import {  useCreateLectureMutation, useGetCourseLectureQuery } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import Lecture from "./Lecture";
 
 
 
@@ -19,16 +20,20 @@ const CreateLecture = () => {
   
   const navigate= useNavigate();
   const [createLecture,{data,isLoading,error,isSuccess}] =useCreateLectureMutation();
-
+  const {data:lectureData, isLoading:lectureLoading ,isError:lectureError, refetch }= useGetCourseLectureQuery(courseId);
+  console.log(lectureData);
+  
 
   const createLectureHandler=async()=>{
     await createLecture({lectureTitle, courseId})
   };
 
+ 
+
   useEffect(()=>{
     if(isSuccess)
     {
-      
+      refetch();
       toast.success(data.message)
     }
     if(error){
@@ -72,6 +77,24 @@ const CreateLecture = () => {
               "Create Lecture"
             )}
           </Button>
+        </div>
+        <div className="mt-10">
+          {lectureLoading ? (
+            <p>Loading lectures...</p>
+          ) : lectureError ? (
+            <p>Failed to load lectures.</p>
+          ) : lectureData.lectures.length === 0 ? (
+            <p>No lectures availabe</p>
+          ) : (
+            lectureData.lectures.map((lecture, index) => (
+              <Lecture
+                key={lecture._id}
+                lecture={lecture}
+                courseId={courseId}
+                index={index}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
