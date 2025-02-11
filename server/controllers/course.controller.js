@@ -183,9 +183,9 @@ export const editLecture= async(req,res)=>{
             lecture.lectureTitle=lectureTitle;
 
         }
-        if(videoInfo.videoUrl)lecture.videoUrl=videoInfo.videoUrl;
-        if(videoInfo.publicId) lecture.publicId=videoInfo.publicId;
-        if(isPreviewFree)lecture.isPreviewFree= isPreviewFree;
+        if(videoInfo?.videoUrl)lecture.videoUrl=videoInfo.videoUrl;
+        if(videoInfo?.publicId) lecture.publicId=videoInfo.publicId;
+        lecture.isPreviewFree= isPreviewFree;
 
         await lecture.save();
 
@@ -196,6 +196,7 @@ export const editLecture= async(req,res)=>{
             await course.save()
         }
         return res.status(200).json({
+            lecture,
             message:"Lecture Updated successfully"
         })
 
