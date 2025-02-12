@@ -58,6 +58,7 @@ const LectureTab = () => {
     if(isSuccess)
     {
       toast.success(data.message)
+      navigate(`/admin/course/${courseId}/lecture`)
     }
 
     if(error)
@@ -102,6 +103,7 @@ const LectureTab = () => {
         {
           setUploadVideoInfo({videoUrl:res.data.data.url, pulicId:res.data.data.public_id});
           setBtnDisable(false);
+          // navigate(`/admin/course/${courseId}/lecture`)
           toast.success(res.data.message)
         }
         

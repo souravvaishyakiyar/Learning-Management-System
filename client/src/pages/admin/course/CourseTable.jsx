@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetCreatorCourseQuery } from '@/features/api/courseApi';
+import { useGetCourseByIdQuery, useGetCreatorCourseQuery } from '@/features/api/courseApi';
 import { Edit } from 'lucide-react';
 
 import React from 'react'
@@ -25,6 +25,8 @@ const CourseTable = () => {
     return <h1>Loading...</h1>
     
   }
+
+
  
   return (
     <>
@@ -47,7 +49,7 @@ const CourseTable = () => {
      {data.courses.map((course) => (
        <TableRow key={course._id}>
          <TableCell className="font-medium">{course?.coursePrice||'NA'}</TableCell>
-         <TableCell><Badge>{course.isPublished?"Published":"Draft"}</Badge></TableCell>
+         <TableCell><Badge>{course.isPublished?"Published":"Unpublished"}</Badge></TableCell>
          <TableCell>{course.courseTitle}</TableCell>
          <TableCell>{course.category}</TableCell>
          <TableCell className="text-right">
