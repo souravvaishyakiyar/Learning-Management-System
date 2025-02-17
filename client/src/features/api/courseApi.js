@@ -111,6 +111,7 @@ export const courseApi = createApi({
 });
 
 export const {
+  // useCreateCourseMutation,
   useCreateCourseMutation,
   useGetCreatorCourseQuery,
   useEditCourseMutation,
@@ -122,5 +123,6 @@ export const {
   useGetLectureByIdQuery,
   usePublishCourseMutation,
   useRemoveCourseMutation,
+  // useGetPublishedCourseQuery
   useGetPublishedCourseQuery
 } = courseApi;

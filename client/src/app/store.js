@@ -4,9 +4,10 @@ import rootReducer from "./rootReducer";
 // import { authApi } from "./authApi"; // Adjust the import path as necessary
 import { authApi } from "@/features/api/authApi";
 import { courseApi } from "@/features/api/courseApi";
+import { purchaseApi } from "@/features/api/purchaseApi";
 export const appStore = configureStore({
     reducer:rootReducer,
-    middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(authApi.middleware, courseApi.middleware),   
+    middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(authApi.middleware, courseApi.middleware,purchaseApi.middleware),   
       
     serializableCheck:false
 
