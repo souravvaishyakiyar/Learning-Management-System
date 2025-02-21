@@ -10,7 +10,7 @@ const BuyCourseButton = ({courseId}) => {
   const purchaseCourseHandler=async()=>{
     await createCheckoutSession(courseId);
   }
-  console.log(data)
+  
   useEffect(()=>{
     if(isSuccess){
        if(data?.url){
