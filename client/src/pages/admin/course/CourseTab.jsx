@@ -18,17 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  useEditCourseMutation,
-  useGetCourseByIdQuery,
-  usePublishCourseMutation,
-  useRemoveCourseMutation,
-} from "@/features/api/courseApi";
-import { Loader2, Trophy } from "lucide-react";
-import { use } from "react";
+import { useEditCourseMutation } from "@/features/api/courseApi";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -38,38 +33,15 @@ const CourseTab = () => {
     category: "",
     courseLevel: "",
     coursePrice: "",
-    courseThumbnail: "",
+    thumbnail: "",
   });
-
-  const params = useParams();
-  const courseId = params.courseId;
-  const { data: courseByIdData, isLoading: courseByIdLoading ,refetch} =
-    useGetCourseByIdQuery(courseId);
-  // const course= courseByIdData?.course;
-  useEffect(() => {
-    if (courseByIdData?.course) {
-      const course = courseByIdData?.course;
-      setInput({
-        courseTitle: course.courseTitle,
-        subTitle: course.subTitle,
-        description: course.description,
-        category: course.category,
-        courseLevel: course.courseLevel,
-        coursePrice: course.coursePrice,
-        courseThumbnail: "",
-      });
-    }
-  }, [courseByIdData]);
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-  const [editCourse, { data, isLoading, isSuccess, error }] =
-    useEditCourseMutation(courseId, { refetchOnMount: true });
-    const [publishCourse]=usePublishCourseMutation();
-  //  const params= useParams();
-  const [removeCourse, {data:removeCourseData, isSuccess:removeCourseSuccess}]=useRemoveCourseMutation();
+  const [editCourse, {data, isLoading, isSuccess, error}]=useEditCourseMutation();
+   const params= useParams();
+   const courseId= params.courseId;
   const changeEventHandler = (e) => {
-    const { name, value } = e.target;
-    setInput({ ...input, [name]: value });
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
 
   const selectCategory = (value) => {
@@ -90,7 +62,7 @@ const CourseTab = () => {
     }
   };
 
-  const updateCourseHandler = async () => {
+  const updateCourseHandler=async ()=>{
     const formData = new FormData();
     formData.append("courseTitle", input.courseTitle);
     formData.append("subTitle", input.subTitle);
@@ -98,56 +70,21 @@ const CourseTab = () => {
     formData.append("category", input.category);
     formData.append("courseLevel", input.courseLevel);
     formData.append("coursePrice", input.coursePrice);
-    formData.append("courseThumbnail", input.courseThumbnail);
+    formData.append("thumbnail", input.thumbnail);
 
-    await editCourse({ formData, courseId });
-  };
-  const removeCourseHandler=async()=>{
-    await removeCourse(courseId)
-   }
-
-   useEffect(()=>{
-    if(removeCourseSuccess)
-    {
-      navigate('/admin/course')
-      toast.success("Course Removed Successfully")
-    }
-
-   },[removeCourseSuccess])
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success(data.message || "Course updated successfully");
-      navigate("/admin/course");
-    }
-    if (error) {
-      toast.error(error.data.message || "Something went wrong");
-    }
-  }, [isSuccess, error]);
-  if (courseByIdLoading) return <Loader2 className="h-4 w-4 animate-spin" />;
-
-
-  const publishStatusHandler=async(action)=>{
-    try {
-      const response= await publishCourse({courseId, query:action})
-      if(response.data)
-
-      {
-        refetch()
-        toast.success("Congratulations!! Your Code has been Published")
-      }
-    } catch (error) {
-      toast.error(error.data.message)
-    }
-
+    await editCourse({formData,courseId});
   }
 
- 
-
- 
- 
-
- 
+  useEffect(()=>{
+    if(isSuccess){
+      toast.success(data.message||"Course updated successfully");
+      //  navigate("/admin/course");
+    }
+    if(error){
+      toast.error(error.data.message||"Something went wrong");
+    }
+  },[isSuccess,error]);
+  const isPublished = true;
 
   return (
     <Card>
@@ -159,10 +96,10 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div>
-          <Button variant="outlined" disabled={courseByIdData?.course.lectures.length==0}  onClick={()=>publishStatusHandler(courseByIdData?.course.isPublished ? "false":"true")}>
-            {courseByIdData?.course.isPublished ? "Unpublish" : "Publish"}
+          <Button variant="outlined">
+            {isPublished ? "Unpublish" : "Publish"}
           </Button>
-          <Button onClick={removeCourseHandler}>Remove Course</Button>
+          <Button>Remove Course</Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -194,7 +131,10 @@ const CourseTab = () => {
           <div className="flex items-center gap-5">
             <div>
               <Label>Category</Label>
-              <Select value={input.category} onValueChange={selectCategory}>
+              <Select
+                // defaultValue={input.category}
+                onValueChange={selectCategory}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -224,7 +164,7 @@ const CourseTab = () => {
             <div>
               <Label>Course Level</Label>
               <Select
-                value={input.courseLevel}
+                // defaultValue={input.courseLevel}
                 onValueChange={selectCourseLevel}
               >
                 <SelectTrigger className="w-[180px]">

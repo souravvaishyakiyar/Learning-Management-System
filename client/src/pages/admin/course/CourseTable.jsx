@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {  useGetCreatorCourseQuery } from '@/features/api/courseApi';
+import { useGetCourseByIdQuery, useGetCreatorCourseQuery } from '@/features/api/courseApi';
 import { Edit } from 'lucide-react';
 
 import React from 'react'
